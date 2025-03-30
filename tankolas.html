@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tankolás</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .keszlet-info {
+      background-color: #f0f0f0;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 5px solid #007bff;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    canvas {
+      border: 1px solid #000;
+      width: 100%;
+      height: 150px;
+      margin-top: 1rem;
+      touch-action: none;
+    }
+
+    button {
+      font-size: 1.4rem;
+      padding: 1rem;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+
+    #clear-signature {
+      background-color: #eee;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Munkagép Tankolás</h1>
+
+  <div class="keszlet-info">
+    <h3>Elérhető készlet</h3>
+    {% for sor in keszlet %}
+    <p>{{ sor['ceg'] }}: {{ '%.1f' % sor['liter'] }} liter</p>
+    {% endfor %}
+
+  </div>
+
+  <form method="POST">
+    
+    <label>Tankolástz végző sofőr:
+      <select name="sofor" required>
+        <option value="Salánki Imre">Salánki Imre</option>
+        <option value="Katona Csaba">Katona Csaba</option>
+        <option value="Makó Róbert">Makó Róbert</option>
+      </select>
+    </label>
+
+    <label>Munkagép:
+      <select name="gep_neve" required>
+        <option value="AGR:TR-60">AGR:TR-60</option>
+        <option value="AGR:TR-135">AGR:TR-135</option>
+        <option value="Manithu">Manithu</option>
+        <option value="Cather">Cather</option>
+        <option value="JCB-555P">JCB-555P</option>
+        <option value="JCB-8025">JCB-8025</option>
+        <option value="JCB-8026">JCB-8026</option>
+        <option value="JCB 3CX">JCB 3CX</option>
+        <option value="JCB 1XC">JCB 1XC</option>
+        <option value="TR-Linde">TR-Linde</option>
+      </select>
+    </label>
+
+    <label>Üzemóra:
+      <input type="number" name="uzemora" required />
+    </label>
+
+    <label>Liter:
+      <input type="number" name="liter" step="0.1" required />
+    </label>
+
+    <label>Gépkezelő:
+      <select name="gepkezelo" required>
+        <option value="Pázmándi András">Pázmándi András</option>
+        <option value="Máté Balázs">Máté Balázs</option>
+        <option value="Kovács Zsolt">Kovács Zsolt</option>
+        <option value="Krosztics Róbert">Krosztics Róbert</option>
+      </select>
+    </label>
+
+
+    <label>Aláírás</label>
+    <canvas id="signature-pad"></canvas>
+    <input type="hidden" name="signature" id="signature" />
+    <button type="button" id="clear-signature">Aláírás törlése</button>
+
+    <button type="submit">Mentés</button>
+    <a href="{{ url_for('index') }}"><button type="button"
+        style="margin-top: 1rem; background-color: #ccc;">Vissza</button></a>
+  </form>
+
+  <script>
+    const canvas = document.getElementById('signature-pad');
+    const ctx = canvas.getContext('2d');
+    const signatureInput = document.getElementById('signature');
+    const clearBtn = document.getElementById('clear-signature');
+
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    let drawing = false;
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
+        y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+      };
+    }
+
+    function startDraw(e) {
+      e.preventDefault();
+      drawing = true;
+      const pos = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+
+    function stopDraw(e) {
+      if (!drawing) return;
+      drawing = false;
+      e.preventDefault();
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseout', stopDraw);
+    canvas.addEventListener('touchstart', startDraw);
+    canvas.addEventListener('touchmove', draw);
+    canvas.addEventListener('touchend', stopDraw);
+
+    clearBtn.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      signatureInput.value = '';
+    });
+
+    document.querySelector('form').addEventListener('submit', () => {
+      signatureInput.value = canvas.toDataURL();
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Új felhasználó regisztrálása</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 500px;
+            margin: auto;
+            padding: 2rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Új felhasználó regisztrálása</h1>
+    <form method="POST">
+        <label for="username">Felhasználónév:</label>
+        <input type="text" name="username" required>
+
+        <label for="password">Jelszó:</label>
+        <input type="password" name="password" required>
+
+        <label for="role">Szerepkör:</label>
+        <select name="role" required>
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+        </select>
+
+        <button type="submit">Regisztrálás</button>
+    </form>
+</body>
+</html>

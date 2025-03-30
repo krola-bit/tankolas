@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Felhasználók listája</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 700px;
+            margin: auto;
+            padding: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ddd;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 1rem;
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Felhasználók</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Felhasználónév</th>
+                <th>Szerepkör</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user['id'] }}</td>
+                <td>{{ user['username'] }}</td>
+                <td>{{ user['role'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('index') }}">Vissza a főoldalra</a>
+</body>
+</html>
