@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Főoldal</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 2rem;
+    }
+    a.button {
+      display: inline-block;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      margin: 1rem;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    a.button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Üdvözlünk, {{ session['username'] }}!</h1>
+
+  {% if session['role'] == 'user' %}
+    <a href="{{ url_for('tanker') }}" class="button">Tanker feltöltés</a>
+    <a href="{{ url_for('tankolas') }}" class="button">Tankolás</a>
+  {% endif %}
+
+  {% if session['role'] == 'admin' %}
+    <a href="{{ url_for('register') }}" class="button">Új felhasználó regisztrálása</a>
+  {% endif %}
+
+  <br /><br />
+  <a href="{{ url_for('logout') }}" class="button" style="background-color: #dc3545;">Kijelentkezés</a>
+</body>
+</html>
